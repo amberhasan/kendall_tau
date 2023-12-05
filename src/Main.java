@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
 
@@ -23,6 +27,8 @@ public class Main {
 //        args = new String[] {"11", "1", "T(14,2,11)-5.txt"};
 
 //        args = new String[] {"8", "2", "6", "1"};
+        args = new String[] {"6", "1", "T(8,2,6)-5.txt"};
+
 //        args = new String[] {"9", "2", "6", "1"};
 //        args = new String[] {"10", "2", "6", "1"};
 //        args = new String[] {"11", "2", "6", "1"};
@@ -43,7 +49,7 @@ public class Main {
         if(indexSearch)
             IndexSearch();
         else
-            FixedSearch();
+            FixedSearch2();
     }
 
     public static void IndexSearch() {
@@ -75,7 +81,7 @@ public class Main {
         }
     }
 
-    public static void FixedSearch() {
+    public static void FixedSearch1() {
         System.out.println("Running Fixed Search");
 
         ArrayList<int[]> indices = new ArrayList<>();
@@ -151,6 +157,57 @@ public class Main {
             }
         }
         System.out.println("P(" + n + "," + d + ") >= " + totalCount);
+    }
+    public static void FixedSearch2() {
+        System.out.println("Running Fixed Search");
+
+        ArrayList<int[]> indices = new ArrayList<>();
+        HashMap<String, Integer> results = new HashMap<>();
+        AtomicInteger totalCount = new AtomicInteger();
+
+        // read indexFile to obtain list of fixed indices
+        try {
+            BufferedReader file = new BufferedReader(new FileReader(indexFile));
+            String line;
+            while ((line = file.readLine()) != null) {
+                String[] perm = line.split(" ");
+                ArrayList<Integer> idx = new ArrayList<>();
+                for (int i = 0; i < perm.length; i++) {
+                    if (!perm[i].equals("0")) {
+                        idx.add(i);
+                    }
+                }
+                int[] arr = idx.stream().mapToInt(i -> i).toArray();
+                indices.add(arr);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.exit(0);
+        }
+
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        for (int[] idxs : indices) {
+            executor.submit(() -> {
+                int[] printIdxs = Arrays.stream(idxs).map(i -> i + 1).toArray();
+                System.out.println("Processing A(" + n + "," + d + ")-" + Arrays.toString(printIdxs));
+                fixedPA(idxs);
+                System.out.println("A(" + n + "," + d + ")-" + Arrays.toString(printIdxs) + " >= " + N);
+                totalCount.addAndGet(N);
+            });
+        }
+
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(60, TimeUnit.MINUTES)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+
+        System.out.println("P(" + n + "," + d + ") >= " + totalCount.get());
     }
 
     public static void indexPA() {
