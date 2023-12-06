@@ -17,63 +17,12 @@ public class Main {
     static boolean indexSearch;
 
     public static void main(String[] args) {
-//        args = new String[] {"9", "2", "3", "1"};
-//        args = new String[] {"14", "2", "11", "1"};
-//        args = new String[] {"11", "1", "T(14,2,11)-5.txt"};
-//        args = new String[] {"11", "1", "T(14,2,11)-5.txt"};
-
-//        args = new String[] {"8", "2", "6", "1"};
-//        args = new String[] {"9", "2", "6", "1"};
-//        args = new String[] {"10", "2", "6", "1"};
-//        args = new String[] {"11", "2", "6", "1"};
-//        args = new String[] {"12", "2", "6", "1"};
-
-//        args = new String[] {"12", "2", "6", "1"};
-
-//        args = new String[] {"6", "1", "T(13,2,6)-10.txt"};
-//        args = new String[] {"6", "3", "3", "2"};
-//        args = new String[] {"3", "1", "T(6,3,3)-22.txt"};
-//
-//        args = new String[] {"13", "2", "6", "1"};
-//        args = new String[] {"14", "2", "6", "1"};
-//        args = new String[] {"15", "2", "6", "1"};
-//        args = new String[] {"3", "5", "T(12,12,9)-73105.txt"};
+//        args = new String[] {"10", "2", "2", "1"};
+        args = new String[] {"6", "1", "T(11,2,6)-8.txt"};
         parseArgs(args);
-
-        if(indexSearch)
-            IndexSearch();
-        else
-            FixedSearch();
+        FixedSearch();
     }
 
-    public static void IndexSearch() {
-        System.out.println("Running Index Search");
-        System.out.println("T(" + n + "," + m + "," + d + ")");
-        while(true) {
-            indexPA();
-            if(Nmax < N) {
-                Nmax = N;
-                System.out.println("T(" + n + "," + m + "," + d + ")>=" + N);
-                try {
-                    File file = new File("T(" + n + "," + m + "," + d + ")-" + N + ".txt");
-                    file.createNewFile();
-                    FileWriter fp = new FileWriter(file);
-                    for(int j = 0; j < N; j++) {
-                        StringBuilder toWrite = new StringBuilder();
-                        for(int i = 0; i < n - 1; i++) {
-                            toWrite.append(P[j][i] + 1).append(" ");
-                        }
-                        toWrite.append(P[j][n - 1] + 1).append("\r\n");
-                        fp.write(toWrite.toString());
-                    }
-                    fp.flush();
-                    fp.close();
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-            }
-        }
-    }
 
     public static void FixedSearch() {
         System.out.println("Running Fixed Search");
