@@ -2,10 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 public class Main {
 
@@ -18,9 +15,12 @@ public class Main {
 
     public static void main(String[] args) {
 //        args = new String[] {"10", "2", "2", "1"};
+        System.out.println(new Date().toString());
         args = new String[] {"6", "1", "T(11,2,6)-8.txt"};
         parseArgs(args);
         FixedSearch();
+        System.out.println(new Date().toString());
+
     }
 
 
