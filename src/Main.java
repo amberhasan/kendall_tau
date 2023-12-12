@@ -6,10 +6,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
-    static int n, m, d, u;
+
+    static int n = 4;
+    static int m = 2;
+    static int d = 3;
+    static int u = 1;
     static int N, Nmax = 0;
     static int sz;
     static int[][] P;
@@ -17,27 +24,9 @@ public class Main {
     static boolean indexSearch;
 
     public static void main(String[] args) {
-//        args = new String[] {"9", "2", "3", "1"};
-//        args = new String[] {"14", "2", "11", "1"};
-//        args = new String[] {"11", "1", "T(14,2,11)-5.txt"};
-//        args = new String[] {"11", "1", "T(14,2,11)-5.txt"};
+        args = new String[] {String.valueOf(n), String.valueOf(m), String.valueOf(d), String.valueOf(u)};
+//        args = new String[] {String.valueOf(d), String.valueOf(u), "T(14,2,11)-5.txt"};
 
-//        args = new String[] {"8", "2", "6", "1"};
-//        args = new String[] {"9", "2", "6", "1"};
-//        args = new String[] {"10", "2", "6", "1"};
-//        args = new String[] {"11", "2", "6", "1"};
-//        args = new String[] {"12", "2", "6", "1"};
-
-//        args = new String[] {"12", "2", "6", "1"};
-
-//        args = new String[] {"6", "1", "T(13,2,6)-10.txt"};
-//        args = new String[] {"6", "3", "3", "2"};
-//        args = new String[] {"3", "1", "T(6,3,3)-22.txt"};
-//
-//        args = new String[] {"13", "2", "6", "1"};
-//        args = new String[] {"14", "2", "6", "1"};
-//        args = new String[] {"15", "2", "6", "1"};
-//        args = new String[] {"3", "5", "T(12,12,9)-73105.txt"};
         parseArgs(args);
 
         if(indexSearch)
@@ -103,6 +92,10 @@ public class Main {
 
         int searchCount = 1;
         int totalCount = 0;
+
+        // Step 1: Initialize ExecutorService
+//        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
         for(int[] idxs : indices) {
             // printed indices are from [1,n], actual indices are [0, n-1]
             int[] printIdxs = idxs.clone();
@@ -184,7 +177,7 @@ public class Main {
             if(dist(data)) {
                 addToPA(data);
             }
-            hasNext = findNextPermutation(data);
+            hasNext = findNextLexicographicPermutation(data);
         }
     }
 
@@ -220,7 +213,7 @@ public class Main {
             if(dist(perm)) {
                 addToPA(perm);
             }
-            hasNext = findNextPermutation(data);
+            hasNext = findNextLexicographicPermutation(data);
         }
     }
 
@@ -301,7 +294,7 @@ public class Main {
         }
     }
 
-    public static boolean findNextPermutation(int[] data) {
+    public static boolean findNextLexicographicPermutation(int[] data) {
         int length = n;
         if(!indexSearch)
             length = m;
