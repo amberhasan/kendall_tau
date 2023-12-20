@@ -2,17 +2,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
 public class Main {
-    static int n = 9;
-    static int m = 9;
-    static int d = 9;
-    static int u = 1;
+    static int n, m, d, u;
     static int N, Nmax = 0;
     static int sz;
     static int[][] P;
@@ -24,30 +20,12 @@ public class Main {
     static int[] sjtPermutation;
     static int[] identityPermutation;
     static int numCalls = 0;
-    static int[] totalPermutations = new int[24];
-
 
     public static void main(String[] args) {
-        identityPermutation = createIdentityPermutation(n);
-        sjtPermutation = identityPermutation;
-
-        // Initialize the direction array
-        direction = new int[n];
-        Arrays.fill(direction, -1); // Assuming -1 for left, 1 for right
-
-        //Call NextSJT 24 times and store it into the array so we can use it
-//        for (int i = 0; i < 24; i++) {
-//            if (findNextSJTPermutation()) {
-////                totalPermutations[i] = convertToInt(sjtPermutation);
-//                printPermutation(sjtPermutation);
-//            }
-//        }
-//        printPermutation(totalPermutations);
-
-        args = new String[] {String.valueOf(n), String.valueOf(m), String.valueOf(d), String.valueOf(u)};
+//        args = new String[] {args[0], args[1], args[2], args[3]};
 //        args = new String[] {String.valueOf(d), String.valueOf(u), "T(14,2,11)-5.txt"};
-
         parseArgs(args);
+        initializeSJTSetup();
 
         if(indexSearch)
             IndexSearch();
@@ -55,14 +33,16 @@ public class Main {
             FixedSearch();
     }
 
-    public static int convertToInt(int[] array) {
-        int result = 0;
-        for (int i : array) {
-            int digits = i > 0 ? (int) Math.log10(i) + 1 : 1;
-            result = result * (int) Math.pow(10, digits) + i;
-        }
-        return result;
+
+    public static void initializeSJTSetup(){
+        identityPermutation = createIdentityPermutation(n);
+        sjtPermutation = identityPermutation;
+
+        // Initialize the direction array
+        direction = new int[n];
+        Arrays.fill(direction, -1); // Assuming -1 for left, 1 for right
     }
+
     public static int[] createIdentityPermutation(int n) {
         int[] identity = new int[n];
         for (int i = 0; i < n; i++) {
