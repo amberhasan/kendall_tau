@@ -2,16 +2,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
 public class Main {
-    static int n = 4;
-    static int m = 3;
-    static int d = 1;
-    static int u = 0;
+    static int n = 9;
+    static int m = 9;
+    static int d = 9;
+    static int u = 1;
     static int N, Nmax = 0;
     static int sz;
     static int[][] P;
@@ -23,6 +24,8 @@ public class Main {
     static int[] sjtPermutation;
     static int[] identityPermutation;
     static int numCalls = 0;
+    static int[] totalPermutations = new int[24];
+
 
     public static void main(String[] args) {
         identityPermutation = createIdentityPermutation(n);
@@ -32,32 +35,44 @@ public class Main {
         direction = new int[n];
         Arrays.fill(direction, -1); // Assuming -1 for left, 1 for right
 
-        //Call NextSJT 24 times
-        for (int i = 0; i < 24; i++) {
-            if (findNextSJTPermutation()) {
-                printPermutation();
-            }
-        }
-//        args = new String[] {String.valueOf(n), String.valueOf(m), String.valueOf(d), String.valueOf(u)};
+        //Call NextSJT 24 times and store it into the array so we can use it
+//        for (int i = 0; i < 24; i++) {
+//            if (findNextSJTPermutation()) {
+////                totalPermutations[i] = convertToInt(sjtPermutation);
+//                printPermutation(sjtPermutation);
+//            }
+//        }
+//        printPermutation(totalPermutations);
+
+        args = new String[] {String.valueOf(n), String.valueOf(m), String.valueOf(d), String.valueOf(u)};
 //        args = new String[] {String.valueOf(d), String.valueOf(u), "T(14,2,11)-5.txt"};
 
-//        parseArgs(args);
-//
-//        if(indexSearch)
-//            IndexSearch();
-//        else
-//            FixedSearch();
+        parseArgs(args);
+
+        if(indexSearch)
+            IndexSearch();
+        else
+            FixedSearch();
     }
 
+    public static int convertToInt(int[] array) {
+        int result = 0;
+        for (int i : array) {
+            int digits = i > 0 ? (int) Math.log10(i) + 1 : 1;
+            result = result * (int) Math.pow(10, digits) + i;
+        }
+        return result;
+    }
     public static int[] createIdentityPermutation(int n) {
         int[] identity = new int[n];
         for (int i = 0; i < n; i++) {
-            identity[i] = i+1;
+            identity[i] = i;
         }
         return identity;
     }
 
     public static void IndexSearch() {
+
         System.out.println("Running Index Search");
         System.out.println("T(" + n + "," + m + "," + d + ")");
         while(true) {
@@ -169,6 +184,7 @@ public class Main {
     }
 
     public static void indexPA() {
+
         int[] data = new int[n];
         sz = 100_000;
         P = new int[sz][n];
@@ -195,11 +211,14 @@ public class Main {
         }
         boolean hasNext = true;
         // iterate through all permutations
+
         while(hasNext) {
+//            System.out.println("sjtPermutation" + Arrays.toString(sjtPermutation));
             if(dist(data)) {
                 addToPA(data);
             }
-            hasNext = findNextLexicographicPermutation(data);
+            hasNext = findNextSJTPermutation();
+            data = sjtPermutation;
         }
     }
 
@@ -235,7 +254,8 @@ public class Main {
             if(dist(perm)) {
                 addToPA(perm);
             }
-            hasNext = findNextLexicographicPermutation(data);
+            hasNext = findNextSJTPermutation();
+            data = sjtPermutation;
         }
         System.out.println("Adding permutation to PA: " + Arrays.toString(data));
     }
@@ -292,6 +312,10 @@ public class Main {
         int res = 0;
         for(int i = 0; i < n; i++) {
             int k = i;
+//            System.out.println("Here is p1" + Arrays.toString(p1));
+//            System.out.println("Here is p2" + Arrays.toString(p2));
+//            System.out.println("Here is i" + i);
+//            System.out.println("Here is k" + k);
             while(p1[i] != p2_copy[k]) {
                 k++;
             }
@@ -303,7 +327,7 @@ public class Main {
                 }
             }
         }
-        System.out.println("Kendall tau distance between " + Arrays.toString(p1) + " and " + Arrays.toString(p2) + " is: " + res);
+//        System.out.println("Kendall tau distance between " + Arrays.toString(p1) + " and " + Arrays.toString(p2) + " is: " + res);
         return false;
     }
 
@@ -429,8 +453,8 @@ public class Main {
         }
     }
 
-    private static void printPermutation() {
-        for (int i : sjtPermutation) {
+    private static void printPermutation(int[] permutation) {
+        for (int i : permutation) {
             System.out.print(i + " ");
         }
         System.out.println();
