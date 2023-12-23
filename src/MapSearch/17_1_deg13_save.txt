@@ -1,0 +1,5 @@
+1207013478
+[false, false, false, false, true, true, false, true, true, true, true, true, true, false]
+[1, 0, 0, 0, 15, 1, 0, 8, 10, 6, 15, 1, 13, 0]
+1
+false
