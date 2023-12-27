@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
+//prints out all SJT permutations.
 public class SJT {
     static int n = 4;
     static int m = 2;

@@ -17,13 +17,24 @@ public class MainSJT {
 
     // Global variables for SJT
     static int[] direction;
+    static int[] directionM;
     static int[] sjtPermutation;
+    static int[] sjtPermutationM;
     static int[] identityPermutation;
+    static int[] identityPermutationM;
     static int numCalls = 0;
 
     public static void main(String[] args) {
-        args = new String[] {"4", "2", "2", "1"};
-//        args = new String[] {String.valueOf(d), String.valueOf(u), "T(14,2,11)-5.txt"};
+//        args = new String[] {"5", "3", "2", "1"};
+        args = new String[] {"2", "1", "T(5,3,2)-30.txt"};
+
+//                args = new String[] {String.valueOf(1), String.valueOf(1), "T(4,2,2)-6.txt"};
+
+//                args = new String[] {"4", "2", "2", "1"};
+
+//        args = new String[] {String.valueOf(3), String.valueOf(1), "T(5,4,3)-20.txt"};
+
+//        args = new String[] {String.valueOf(3), String.valueOf(1), "T(5,4,3)-20.txt"};
         parseArgs(args);
         if(indexSearch)
             IndexSearch();
@@ -38,6 +49,15 @@ public class MainSJT {
         // Initialize the direction array
         direction = new int[n];
         Arrays.fill(direction, -1); // Assuming -1 for left, 1 for right
+    }
+
+    public static void initializeSJTSetupM(){
+        identityPermutationM = createIdentityPermutation(m);
+        sjtPermutationM = identityPermutationM;
+
+        // Initialize the direction array
+        directionM = new int[m];
+        Arrays.fill(directionM, -1); // Assuming -1 for left, 1 for right
     }
 
     public static int[] createIdentityPermutation(int n) { //0-indexed
@@ -83,7 +103,6 @@ public class MainSJT {
 
     public static void FixedSearch() {
         System.out.println("Running Fixed Search");
-
         ArrayList<int[]> indices = new ArrayList<>();
         HashMap<String, Integer> results = new HashMap<>();
 
@@ -213,7 +232,9 @@ public class MainSJT {
     }
 
     public static void fixedPA(int[] idxs) {
-        int[] data = new int[m];
+        initializeSJTSetupM();
+        System.out.println("Ummmmmm sjtPermutationM is...." + Arrays.toString(sjtPermutationM));
+        int[] data = new int[m]; //this data is different, it's only size m
         sz = 100_000;
         P = new int[sz][n];
         Random rand = new Random(System.currentTimeMillis());
@@ -240,12 +261,20 @@ public class MainSJT {
         boolean hasNext = true;
         // iterate through all permutations
         while(hasNext) {
+            System.out.println("Insert 2 issue");
             int[] perm = insert(data, idxs);
             if(dist(perm)) {
                 addToPA(perm);
             }
-            hasNext = findNextSJTPermutation();
-            data = sjtPermutation;
+            hasNext = findNextSJTPermutationM();
+            if(sjtPermutationM == null){
+                System.out.println("ok we are nulll....");
+
+                initializeSJTSetupM();
+
+            }
+            data = sjtPermutationM;
+            System.out.println("sjtPermutationM is " + Arrays.toString(sjtPermutationM));
         }
 //        System.out.println("Adding permutation to PA: " + Arrays.toString(data));
     }
@@ -265,6 +294,8 @@ public class MainSJT {
     }
 
     public static int[] insert(int[] data, int[] indices) {
+        System.out.println("Here is the data" + Arrays.toString(data));
+        System.out.println("Here is the indices" + Arrays.toString(indices));
         int[] perm = new int[data.length + indices.length];
         for(int i=0; i<indices.length; i++)
             perm[indices[i]] = -1;
@@ -330,38 +361,6 @@ public class MainSJT {
         }
     }
 
-    public static boolean findNextLexicographicPermutation(int[] data) {
-        int length = n;
-        if(!indexSearch)
-            length = m;
-        int last = length - 2;
-        // find the longest non-increasing suffix and pivot
-        while (last >= 0) {
-            if (data[last] < data[last + 1]) {
-                break;
-            }
-            last--;
-        }
-        // If there is no increasing pair, there is no higher order permutation
-        if(last < 0) {
-            return false;
-        }
-        int nextGreater = length - 1;
-        // Find the rightmost successor to the pivot
-        for(int i = nextGreater; i > last; i--) {
-            if (data[i] > data[last]) {
-                nextGreater = i;
-                break;
-            }
-        }
-        // Swap the successor and the pivot
-        swap(data, nextGreater, last);
-        // Reverse the suffix
-        reverse(data, last + 1, length - 1);
-        // Return true as the next_permutation is done
-        return true;
-    }
-
     public static boolean findNextSJTPermutation() {
         numCalls++;
         if(numCalls == 1){
@@ -397,6 +396,46 @@ public class MainSJT {
         for (int i = 0; i < sjtPermutation.length; i++) {
             if (sjtPermutation[i] > k) {
                 direction[i] = -direction[i];
+            }
+        }
+        return true;
+    }
+
+    public static boolean findNextSJTPermutationM() {
+        numCalls++;
+        if(numCalls == 1){
+            sjtPermutationM = identityPermutation;
+            return true;
+        }
+        // Find the largest mobile element k
+        int k = -1, kIndex = -1;
+        for (int i = 0; i < sjtPermutationM.length; i++) {
+            int adjacentNumIndex = i + directionM[i];
+            if (adjacentNumIndex >= 0 && adjacentNumIndex < sjtPermutationM.length) {
+                if ((directionM[i] == -1 && sjtPermutationM[i] > sjtPermutationM[adjacentNumIndex]) ||
+                        (directionM[i] == 1 && sjtPermutationM[i] > sjtPermutationM[adjacentNumIndex])) {
+                    if (k == -1 || sjtPermutationM[i] > sjtPermutationM[kIndex]) {
+                        k = sjtPermutationM[i];
+                        kIndex = i;
+                    }
+                }
+            }
+        }
+
+        // No mobile element means this was the last permutation
+        if (k == -1) {
+            return false;
+        }
+
+        // Swap k with the element in its direction
+        int swapIndex = kIndex + directionM[kIndex];
+        swap(sjtPermutationM, kIndex, swapIndex);
+        swap(directionM, kIndex, swapIndex);
+
+        // Reverse the direction of all elements larger than k
+        for (int i = 0; i < sjtPermutationM.length; i++) {
+            if (sjtPermutationM[i] > k) {
+                directionM[i] = -directionM[i];
             }
         }
         return true;

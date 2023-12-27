@@ -17,9 +17,14 @@ public class KendallMultiSearch {
     static boolean indexSearch;
 
     public static void main(String[] args) {
-        args = new String[] {"4", "2", "2", "1"};
-//        args = new String[] {"3", "5", "T(9,2,3)-16.txt"};
-        parseArgs(args);  
+//        args = new String[] {"9", "5", "2", "1"};
+//        args = new String[] {String.valueOf(3), String.valueOf(1), "T(5,4,3)-20.txt"};
+//        args = new String[] {"4", "2", "2", "1"};
+//        args = new String[] {"5", "3", "2", "1"};
+
+//        args = new String[] {"2", "1", "T(5,3,2)-30.txt"};
+        args = new String[] {"2", "1", "T(9,5,2)-7560.txt"};
+        parseArgs(args);
 
         if(indexSearch)
             IndexSearch();
@@ -201,6 +206,7 @@ public class KendallMultiSearch {
             if(dist(perm)) {
                 addToPA(perm);
             }
+            System.out.println("Here's the data i wanna find the next perm for" + Arrays.toString(data));
             hasNext = findNextPermutation(data);
         }
     }
@@ -220,6 +226,8 @@ public class KendallMultiSearch {
     }
     
     public static int[] insert(int[] data, int[] indices) {
+        System.out.println("Here is the data" + Arrays.toString(data));
+        System.out.println("Here is the indices" + Arrays.toString(indices));
         int[] perm = new int[data.length + indices.length];
         for(int i=0; i<indices.length; i++)
             perm[indices[i]] = -1;
