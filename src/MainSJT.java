@@ -25,16 +25,6 @@ public class MainSJT {
     static int numCalls = 0;
 
     public static void main(String[] args) {
-//        args = new String[] {"5", "3", "2", "1"};
-        args = new String[] {"2", "1", "T(5,3,2)-30.txt"};
-
-//                args = new String[] {String.valueOf(1), String.valueOf(1), "T(4,2,2)-6.txt"};
-
-//                args = new String[] {"4", "2", "2", "1"};
-
-//        args = new String[] {String.valueOf(3), String.valueOf(1), "T(5,4,3)-20.txt"};
-
-//        args = new String[] {String.valueOf(3), String.valueOf(1), "T(5,4,3)-20.txt"};
         parseArgs(args);
         if(indexSearch)
             IndexSearch();
@@ -233,7 +223,6 @@ public class MainSJT {
 
     public static void fixedPA(int[] idxs) {
         initializeSJTSetupM();
-        System.out.println("Ummmmmm sjtPermutationM is...." + Arrays.toString(sjtPermutationM));
         int[] data = new int[m]; //this data is different, it's only size m
         sz = 100_000;
         P = new int[sz][n];
@@ -261,20 +250,15 @@ public class MainSJT {
         boolean hasNext = true;
         // iterate through all permutations
         while(hasNext) {
-            System.out.println("Insert 2 issue");
             int[] perm = insert(data, idxs);
             if(dist(perm)) {
                 addToPA(perm);
             }
             hasNext = findNextSJTPermutationM();
             if(sjtPermutationM == null){
-                System.out.println("ok we are nulll....");
-
                 initializeSJTSetupM();
-
             }
             data = sjtPermutationM;
-            System.out.println("sjtPermutationM is " + Arrays.toString(sjtPermutationM));
         }
 //        System.out.println("Adding permutation to PA: " + Arrays.toString(data));
     }
@@ -294,8 +278,6 @@ public class MainSJT {
     }
 
     public static int[] insert(int[] data, int[] indices) {
-        System.out.println("Here is the data" + Arrays.toString(data));
-        System.out.println("Here is the indices" + Arrays.toString(indices));
         int[] perm = new int[data.length + indices.length];
         for(int i=0; i<indices.length; i++)
             perm[indices[i]] = -1;
@@ -352,7 +334,6 @@ public class MainSJT {
     private static void addToPA(int[] data) {
         System.arraycopy(data, 0, P[N], 0, n);
         N++;
-//        System.out.println("Here is N " +  N);
         if(N == sz) {
             int[][] tmpP = new int[2 * sz][n];
             System.arraycopy(P, 0, tmpP, 0, sz);

@@ -17,13 +17,15 @@ public class KendallMultiSearch {
     static boolean indexSearch;
 
     public static void main(String[] args) {
-//        args = new String[] {"9", "5", "2", "1"};
+        args = new String[] {"9", "5", "2", "1"};
 //        args = new String[] {String.valueOf(3), String.valueOf(1), "T(5,4,3)-20.txt"};
 //        args = new String[] {"4", "2", "2", "1"};
 //        args = new String[] {"5", "3", "2", "1"};
 
 //        args = new String[] {"2", "1", "T(5,3,2)-30.txt"};
-        args = new String[] {"2", "1", "T(9,5,2)-7560.txt"};
+//        args = new String[] {"2", "1", "T(9,5,2)-7560.txt"};
+//        args = new String[] {"2", "1", "T(5,3,2)-30.txt"};
+
         parseArgs(args);
 
         if(indexSearch)
